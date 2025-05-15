@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foxboro Ladder File Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .welcome-text {
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .btn {
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            min-width: 250px;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-convert {
+            background-color: #2ecc71;
+        }
+        .btn-convert:hover {
+            background-color: #27ae60;
+        }
+        .btn-excel {
+            background-color: #e74c3c;
+        }
+        .btn-excel:hover {
+            background-color: #c0392b;
+        }
+        .status {
+            margin-top: 30px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Foxboro Ladder File Converter</h1>
+        
+        <div class="welcome-text">
+            <p>Welcome to the Foxboro Ladder File Conversion Tool. This utility helps you convert Foxboro ladder (.p) files to text (.l) format or export ladder data to Excel for analysis and documentation.</p>
+            <p>To get started, select one of the conversion options below:</p>
+            <ul>
+                <li><strong>Convert to .L Files</strong> - Converts .p ladder files to readable .l text format</li>
+                <li><strong>Export to Excel</strong> - Exports ladder data to Excel with detailed element information</li>
+            </ul>
+        </div>
+        
+        <div class="button-container">
+            <button id="convertBtn" class="btn btn-convert">Convert .P to .L Files</button>
+            <button id="excelBtn" class="btn btn-excel">Dump .P Files to Excel</button>
+        </div>
+        
+        <div id="statusMessage" class="status"></div>
+    </div>
+
+    <script>
+        // JavaScript implementation of the VBA functions
+        // Note: This is a simplified version since browser JavaScript can't directly access filesystem
+        // In a real implementation, you'd need Node.js or another backend technology
+        
+        // Mock data structures similar to VBA types
+        const LadLines = [];
+        const LadComments = [];
+        const RungRemarks = [];
+        const LadHead = {
+            TC_S: Array(16).fill().map(() => ({ PresetValue: 0, ResetValue: 0 })),
+            LadderSize: 0
+        };
+        const LadFoot = {
+            CMPNDBLOCK: ""
+        };
+        
+        const LadderObjectCodes = [
+            "---------", "--( )----", "--(L)----", "--(U)----", "(RTO)----", 
+            "(RTF)----", "(CTU)----", "(CTD)----", "(RST)----", "(MCR)----",
+            "(NCR)----", "(ZCL)----", "(NCL)----", "--(/)----", "(TON)----", 
+            "(TOF)----", "---| |---", "---|/|---"
+        ];
+        
+        const LadderTechIDCodes = Array(180).fill("");
+        // Initialize TechID codes (simplified from VBA version)
+        for (let i = 1; i <= 32; i++) {
+            LadderTechIDCodes[i*2-1] = `TC${i.toString().padStart(2, '0')}_S`;
+            LadderTechIDCodes[i*2] = `TC${i.toString().padStart(2, '0')}_O`;
+        }
+        
+        // Mock function to simulate file reading
+        function readLadderFile(file) {
+            // In a real implementation, this would read the actual file
+            console.log(`Reading file: ${file.name}`);
+            return true;
+        }
+        
+        // Simplified version of DrawLadder function
+        function drawLadder(file) {
+            if (!readLadderFile(file)) {
+                return false;
+            }
+            
+            // Simulate creating .l file
+            const fileName = file.name.replace('.p', '.l');
+            console.log(`Creating ${fileName} with ladder data`);
+            
+            // In a real implementation, this would process the ladder data
+            // and create the text representation
+            
+            return true;
+        }
+        
+        // Simplified version of ExportLadderToExcel function
+        function exportLadderToExcel(file) {
+            if (!readLadderFile(file)) {
+                return false;
+            }
+            
+            // Simulate creating Excel export
+            console.log(`Creating Excel export for ${file.name}`);
+            
+            // In a real implementation, this would process the ladder data
+            // and create an Excel file with all the details
+            
+            return true;
+        }
+        
+        // Handler for Convert to .L button
+        document.getElementById('convertBtn').addEventListener('click', async function() {
+            try {
+                // Note: The File System Access API is experimental and may not work in all browsers
+                const fileHandles = await window.showOpenFilePicker({
+                    multiple: true,
+                    types: [{
+                        description: 'Foxboro Ladder Files',
+                        accept: {
+                            'application/octet-stream': ['.p']
+                        }
+                    }]
+                });
+                
+                const statusElement = document.getElementById('statusMessage');
+                statusElement.style.display = 'none';
+                
+                let successCount = 0;
+                for (const fileHandle of fileHandles) {
+                    const file = await fileHandle.getFile();
+                    if (drawLadder(file)) {
+                        successCount++;
+                    }
+                }
+                
+                statusElement.textContent = `Successfully converted ${successCount} of ${fileHandles.length} files to .l format`;
+                statusElement.className = 'status success';
+                statusElement.style.display = 'block';
+                
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    const statusElement = document.getElementById('statusMessage');
+                    statusElement.textContent = `Error: ${err.message}`;
+                    statusElement.className = 'status error';
+                    statusElement.style.display = 'block';
+                    console.error(err);
+                }
+            }
+        });
+        
+        // Handler for Dump to Excel button
+        document.getElementById('excelBtn').addEventListener('click', async function() {
+            try {
+                // Note: The File System Access API is experimental and may not work in all browsers
+                const fileHandles = await window.showOpenFilePicker({
+                    multiple: true,
+                    types: [{
+                        description: 'Foxboro Ladder Files',
+                        accept: {
+                            'application/octet-stream': ['.p']
+                        }
+                    }]
+                });
+                
+                const statusElement = document.getElementById('statusMessage');
+                statusElement.style.display = 'none';
+                
+                let successCount = 0;
+                for (const fileHandle of fileHandles) {
+                    const file = await fileHandle.getFile();
+                    if (exportLadderToExcel(file)) {
+                        successCount++;
+                    }
+                }
+                
+                statusElement.textContent = `Successfully exported ${successCount} of ${fileHandles.length} files to Excel`;
+                statusElement.className = 'status success';
+                statusElement.style.display = 'block';
+                
+                // In a real implementation, you would generate and download an Excel file
+                // Here we just simulate it with a message
+                
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    const statusElement = document.getElementById('statusMessage');
+                    statusElement.textContent = `Error: ${err.message}`;
+                    statusElement.className = 'status error';
+                    statusElement.style.display = 'block';
+                    console.error(err);
+                }
+            }
+        });
+        
+        // Initialize TechID codes (simplified from VBA version)
+        function fillInLadderCommands() {
+            // This would fill in the LadderTechIDCodes array as in the VBA version
+            // For this demo, we'll just initialize a few
+            LadderTechIDCodes[33] = "INIT";
+            LadderTechIDCodes[34] = "FAILSF";
+            LadderTechIDCodes[35] = "COMMF";
+            LadderTechIDCodes[36] = "POWERF";
+            // ... and so on for the rest of the codes
+        }
+        
+        // Initialize the commands
+        fillInLadderCommands();
+    </script>
+</body>
+</html>

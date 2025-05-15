@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded Google Map</title>
+    <style>
+        /* Optional: Set the height and width of the iframe */
+        #map {
+            width: 600px;
+            height: 450px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Eiffel Tower Location</h1>
+    <iframe 
+        id="map"
+        src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=Eiffel+Tower,Paris+France"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+
+    </iframe>
+    <p>Cats <em>love</em> lasagna.</p>
+    
+</body>
+</html>
